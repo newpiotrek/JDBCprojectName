@@ -15,14 +15,21 @@ public class Database {
 
     public void connect() throws SQLException {
         connection = DriverManager.getConnection(URL, USER, PASSWORD);
-        String createTableQuery = "Create Table IF not EXISTS User(id int not null, first_name varchar(20), last_name varchar (50), primary key(id))";
-        PreparedStatement psCreateTable = connection.prepareStatement(createTableQuery);
-        psCreateTable.executeUpdate();
+        String queryCreateUserTable = "Create Table IF not EXISTS User(id int not null, first_name varchar(20), last_name varchar (50), primary key(id))";
+        PreparedStatement preparedStatementCreateUserTable = connection.prepareStatement(queryCreateUserTable);
+        preparedStatementCreateUserTable.executeUpdate();
+
+        String queryCreateOrganizationTable = "Create Table IF not EXISTS Organization(org_id int not null, department varchar(20), profession varchar (50)," +
+                " id int not null, primary key(org_id), FOREIGN KEY (id) REFERENCES User(id))";
+        PreparedStatement preparedStatementCreateOrganizationTable = connection.prepareStatement(queryCreateOrganizationTable);
+        preparedStatementCreateOrganizationTable.executeUpdate();
+
+        String queryCreateCharityTable = "Create Table IF not EXISTS Charity(charity_id int not null, charity_name varchar(20), charity_position varchar (50)," +
+                " id int not null, primary key(charity_id), FOREIGN KEY (id) REFERENCES User(id))";
+        PreparedStatement preparedStatementCreateCharityTable = connection.prepareStatement(queryCreateCharityTable);
+        preparedStatementCreateCharityTable.executeUpdate();
 
         int primaryKey = 9;
-
-
-
         String checkIfPrimaryKeyExistsQuery = "select first_name, last_name from user where id = ?";
         PreparedStatement psSelectPrimaryKey = connection.prepareStatement(checkIfPrimaryKeyExistsQuery);
         psSelectPrimaryKey.setInt(1, primaryKey);
@@ -73,7 +80,7 @@ public class Database {
 
         // improve id primary key, czy nth istnieje, nie wkladac go ale go dodac nowy rekord albo update starego rekordu
         // utworzyc tabele, ktore zaimplementuja relacje jeden do wielu, wiele do jednego
-        // spróbuj zrobi? jeszcze sortowanie po kluczach u?ywaj?c TreeMap (mo?e Ci by? potrzebne skorzystanie z Comparable :) ). Druga kwestia, któr? mo?esz jeszcze zrobi? to zamieni? String na Word jako klucz (w osobnej klasie).
+        // sprï¿½buj zrobi? jeszcze sortowanie po kluczach u?ywaj?c TreeMap (mo?e Ci by? potrzebne skorzystanie z Comparable :) ). Druga kwestia, ktï¿½r? mo?esz jeszcze zrobi? to zamieni? String na Word jako klucz (w osobnej klasie).
         // clean code, treemap, skasowac Comparable(compareTo) i zobaczyc komunikaty, jak zmienisz w HashaMap'ie ze String(klucz w mapie) na Word i zobacz jak dziala metoda HashCode
         // sciagnac Tomcat version 7
         // zrobic formularz w html (input fileds + submit)
